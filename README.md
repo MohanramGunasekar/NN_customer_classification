@@ -13,95 +13,77 @@ In their existing market, the sales team has classified all customers into 4 seg
 You are required to help the manager to predict the right group of the new customers.
 
 ## Neural Network Model
-![image](https://github.com/user-attachments/assets/5988cf8a-1ac3-42a1-aa73-fd1565aceb80)
 
-
+<img width="1002" height="817" alt="image" src="https://github.com/user-attachments/assets/08836fbd-3598-4a8d-a31b-892329c5d97a" />
 
 ## DESIGN STEPS
 
-### STEP 1:
-Import necessary libraries.Then,the dataset is loaded.
+### STEP 1
+Load and preprocess the dataset (handle missing values, encode categorical features, scale numeric data).
 
-### STEP 2:
-Split the dataset into training and testing dataset.
+### STEP 2
+Split the dataset into training and testing sets, convert to tensors, and create DataLoader objects.
 
-### STEP 3:
-Normalize the features,fit the model and transform the data.
-
-### STEP 4:
-Build the Neural Network Model and compile the model.Then initialize the Model, Loss Function, and Optimizer
-
-### STEP 5:
-Train the model using training data.
-
-### STEP 6:
-Plot the performance plot.
-
-### STEP 7:
-Evaluate the model with the testing data using confusion matrix, classification Report.
+### STEP 3
+Build the neural network model, train it with CrossEntropyLoss and Adam optimizer, then evaluate with confusion matrix and classification report.
 
 ## PROGRAM
-
-### Name: MOHANRAM GUNASEKAR
+### Name: Mohanram Gunasekar
 ### Register Number: 212223240095
 
 ```python
-class PeopleClassifier(nn.Module):
-    def __init__(self, input_size):
-        super(PeopleClassifier, self).__init__()
-        self.fc1 = nn.Linear(input_size, 16)  # First hidden layer
-        self.fc2 = nn.Linear(16, 8) # Second hidden layer
-        self.fc3 = nn.Linear(8, 4) # Output layer
-
+class NeuralNetwork(torch.nn.Module):
+    def __init__(self, size):
+        super().__init__()
+        self.fc1 = torch.nn.Linear(size, 32)
+        self.fc2 = torch.nn.Linear(32, 16)
+        self.fc3 = torch.nn.Linear(16, 4)
+        self.relu = torch.nn.ReLU()
 
     def forward(self, x):
-        x = F.relu(self.fc1(x))  # Activation function
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)  # Output layer (logits)
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.fc3(x)
         return x
-
 ```
 ```python
 # Initialize the Model, Loss Function, and Optimizer
-model = PeopleClassifier(input_size=X_train.shape[1])
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(),lr=0.01)
-
+cynthia_brain=NeuralNetwork(x_train.shape[1])
+loss_fn=torch.nn.CrossEntropyLoss()
+optimizer=torch.optim.Adam(cynthia_brain.parameters(),lr=0.001)
 ```
 ```python
-def train_model(model, train_loader, criterion, optimizer, epochs):
-  for epoch in range(epochs):
-    model.train()
-    for X_batch,y_batch in train_loader:
-      optimizer.zero_grad()
-      outputs=model(X_batch)
-      loss=criterion(outputs,y_batch)
-      loss.backward()
-      optimizer.step()
+def train_model(model, train_loader, criterion, optimizer, epochs=100):
+    for epoch in range(epochs):
+        model.train()
+        for X_batch, y_batch in train_loader:
+            optimizer.zero_grad()
+            outputs = model(X_batch)
+            loss = criterion(outputs, y_batch)
+            loss.backward()
+            optimizer.step()
 
-    if (epoch + 1) % 10 == 0:
-        print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+        if (epoch+1) % 10 == 0:
+            print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
 ```
 
-
-
 ## Dataset Information
-![image](https://github.com/user-attachments/assets/b2b12d07-9611-4bf9-b19f-471520534b59)
 
+<img width="1451" height="638" alt="image" src="https://github.com/user-attachments/assets/cb844952-5aa5-440f-8864-09197b6e52c3" />
 
 ## OUTPUT
-### Confusion Matrix
-![image](https://github.com/user-attachments/assets/fb09288a-5ff7-4c97-808a-4c78fa33b949)
 
+### Confusion Matrix
+
+<img width="704" height="585" alt="image" src="https://github.com/user-attachments/assets/f3dafd8d-ece4-4ccd-a204-216d716b8627" />
 
 ### Classification Report
-![image](https://github.com/user-attachments/assets/14dd9610-64db-48c8-92a4-89f459fba6ce)
 
-
+<img width="551" height="430" alt="image" src="https://github.com/user-attachments/assets/9b0adb78-f332-41b5-b873-a131324107c0" />
 
 ### New Sample Data Prediction
-![image](https://github.com/user-attachments/assets/4027b823-6ba2-463a-a8fc-464d0cda64fa)
 
+<img width="362" height="102" alt="image" src="https://github.com/user-attachments/assets/c217a669-3ed0-4900-92b0-86f283b6693c" />
 
 ## RESULT
-Thus,the neural network classification model to predict the right group of the new customers has successfully developed.
+The neural network model was successfully built and trained to handle classification tasks.
