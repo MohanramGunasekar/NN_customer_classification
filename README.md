@@ -14,7 +14,8 @@ You are required to help the manager to predict the right group of the new custo
 
 ## Neural Network Model
 
-<img width="1002" height="817" alt="image" src="https://github.com/user-attachments/assets/08836fbd-3598-4a8d-a31b-892329c5d97a" />
+<img width="631" height="968" alt="image" src="https://github.com/user-attachments/assets/c6e04623-886f-4b95-af9a-14cd7fadc006" />
+
 
 ## DESIGN STEPS
 
@@ -32,58 +33,71 @@ Build the neural network model, train it with CrossEntropyLoss and Adam optimize
 ### Register Number: 212223240095
 
 ```python
-class NeuralNetwork(torch.nn.Module):
-    def __init__(self, size):
-        super().__init__()
-        self.fc1 = torch.nn.Linear(size, 32)
-        self.fc2 = torch.nn.Linear(32, 16)
-        self.fc3 = torch.nn.Linear(16, 4)
-        self.relu = torch.nn.ReLU()
+class PeopleClassifier(nn.Module):
+    def __init__(self, input_size):
+        super(PeopleClassifier, self).__init__()
+        # Simple 3-layer fully connected network
+        self.fc1 = nn.Linear(input_size, 64)   # Input -> 64
+        self.fc2 = nn.Linear(64, 32)           # 64 -> 32
+        self.fc3 = nn.Linear(32, 4)            # 32 -> 4 classes (A,B,C,D)
 
     def forward(self, x):
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)        # raw logits; CrossEntropyLoss applies Softmax
         return x
 ```
 ```python
-# Initialize the Model, Loss Function, and Optimizer
-cynthia_brain=NeuralNetwork(x_train.shape[1])
-loss_fn=torch.nn.CrossEntropyLoss()
-optimizer=torch.optim.Adam(cynthia_brain.parameters(),lr=0.001)
+input_size = X_train.shape[1]
+model = PeopleClassifier(input_size)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 ```
 ```python
-def train_model(model, train_loader, criterion, optimizer, epochs=100):
+def train_model(model, train_loader, criterion, optimizer, epochs):
+    model.train()
     for epoch in range(epochs):
-        model.train()
+        running_loss = 0.0
         for X_batch, y_batch in train_loader:
             optimizer.zero_grad()
             outputs = model(X_batch)
             loss = criterion(outputs, y_batch)
             loss.backward()
             optimizer.step()
+            running_loss += loss.item()
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{epochs}], '
+                  f'Loss: {running_loss/len(train_loader):.4f}')
 
-        if (epoch+1) % 10 == 0:
-            print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+train_model(model, train_loader, criterion, optimizer, epochs=50)
 ```
 
 ## Dataset Information
 
-<img width="1451" height="638" alt="image" src="https://github.com/user-attachments/assets/cb844952-5aa5-440f-8864-09197b6e52c3" />
+<img width="912" height="725" alt="image" src="https://github.com/user-attachments/assets/edbbcc9d-3fc5-41d4-8c5b-0b5d6ccdda93" />
+
 
 ## OUTPUT
 
 ### Confusion Matrix
 
-<img width="704" height="585" alt="image" src="https://github.com/user-attachments/assets/f3dafd8d-ece4-4ccd-a204-216d716b8627" />
+<img width="278" height="184" alt="image" src="https://github.com/user-attachments/assets/de2d83ba-089b-49d5-a733-39b068266da8" />
+
+
+
+<img width="714" height="573" alt="image" src="https://github.com/user-attachments/assets/48a2ce6a-7160-4924-a1f3-872de39083ae" />
+
 
 ### Classification Report
 
-<img width="551" height="430" alt="image" src="https://github.com/user-attachments/assets/9b0adb78-f332-41b5-b873-a131324107c0" />
+<img width="613" height="270" alt="image" src="https://github.com/user-attachments/assets/fba6c413-0b88-4c07-bc23-df184533bf4d" />
+
 
 ### New Sample Data Prediction
 
-<img width="362" height="102" alt="image" src="https://github.com/user-attachments/assets/c217a669-3ed0-4900-92b0-86f283b6693c" />
+<img width="369" height="84" alt="image" src="https://github.com/user-attachments/assets/ff9bdd49-5292-4b12-97a3-0d19e88032e2" />
+
 
 ## RESULT
 The neural network model was successfully built and trained to handle classification tasks.
